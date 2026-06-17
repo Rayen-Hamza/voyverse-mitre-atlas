@@ -1,0 +1,19 @@
+[project]
+name = "voyverse-mitre-atlas"
+version = "0.1.0"
+description = "Queryable knowledge graph of MITRE ATLAS"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "neo4j>=5.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "black>=24.0.0",
+    "ruff>=0.4.0",
+]

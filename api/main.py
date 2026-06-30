@@ -4,6 +4,7 @@ import asyncio
 import functools
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -30,7 +31,13 @@ from reasoning_engine.tools import (
     read_neo4j_cypher,
 )
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s  %(levelname)-8s  %(name)s  %(message)s",
+    datefmt="%H:%M:%S",
+)
+logging.getLogger("opentelemetry.context").setLevel(logging.CRITICAL)
+logger = logging.getLogger("atlas.api")
 
 app = FastAPI(title="ATLAS Reasoning Engine")
 app.add_middleware(
@@ -62,16 +69,26 @@ def _sse_event(event_type: str, data: dict[str, Any]) -> str:
 def _make_streaming_tool(
     tool_fn: Any,
     log: CitationLog,
-    events: list[str],
+    event_queue: asyncio.Queue,
 ) -> Any:
-    """Wrap a tool with citation logging and event capture."""
+    """Wrap a tool with citation logging and real-time SSE emission."""
     logged_fn = log.wrap(tool_fn)
 
     @functools.wraps(tool_fn)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        t0 = time.perf_counter()
         result = logged_fn(*args, **kwargs)
+        elapsed_ms = (time.perf_counter() - t0) * 1000
+
         entry = log.entries[-1]
-        events.append(
+        logger.info(
+            "[%s] tool=%s  args=%s  %.0fms",
+            entry.ref,
+            entry.tool,
+            _summarize_input(entry.input),
+            elapsed_ms,
+        )
+        event_queue.put_nowait(
             _sse_event(
                 "tool_call",
                 {
@@ -87,13 +104,21 @@ def _make_streaming_tool(
     return wrapper
 
 
+def _summarize_input(inp: dict[str, Any], max_len: int = 120) -> str:
+    """Compact representation of tool input for log lines."""
+    raw = json.dumps(inp, default=str)
+    if len(raw) <= max_len:
+        return raw
+    return raw[:max_len] + "..."
+
+
 def _build_sse_tools(
     log: CitationLog,
-    events: list[str],
+    event_queue: asyncio.Queue,
     answer_holder: dict[str, Any],
 ) -> list:
     """Build the full tool list with streaming wrappers."""
-    wrapped = [_make_streaming_tool(t, log, events) for t in GRAPH_TOOLS]
+    wrapped = [_make_streaming_tool(t, log, event_queue) for t in GRAPH_TOOLS]
 
     def finished_wrapper(answer: str) -> str:
         """Signal that the investigation is complete and deliver the final answer.
@@ -142,7 +167,7 @@ async def _run_agent_async(question: str, tools: list) -> str:
         session_id=session.id,
         new_message=user_msg,
     ):
-        if event.is_final_response() and event.content:
+        if event.is_final_response() and event.content and event.content.parts:
             for part in event.content.parts:
                 if part.text:
                     final_text += part.text
@@ -155,21 +180,42 @@ async def run_query(req: QueryRequest):
     """Stream tool calls and final answer as server-sent events."""
 
     async def event_stream():
+        t_start = time.perf_counter()
+        logger.info("--- query received: %s", req.question[:200])
+
         log = CitationLog()
-        events: list[str] = []
+        event_queue: asyncio.Queue[str] = asyncio.Queue()
         answer_holder: dict[str, Any] = {"answer": None}
 
-        tools = _build_sse_tools(log, events, answer_holder)
+        tools = _build_sse_tools(log, event_queue, answer_holder)
+
+        agent_task = asyncio.create_task(_run_agent_async(req.question, tools))
+
+        while not agent_task.done():
+            try:
+                event = await asyncio.wait_for(event_queue.get(), timeout=0.1)
+                yield event
+            except asyncio.TimeoutError:
+                continue
+
+        while not event_queue.empty():
+            yield event_queue.get_nowait()
+
+        elapsed_s = time.perf_counter() - t_start
 
         try:
-            agent_result = await _run_agent_async(req.question, tools)
-        except Exception as e:
-            logger.exception("Agent failed")
-            yield _sse_event("error", {"message": str(e)})
+            agent_result = agent_task.result()
+        except Exception as exc:
+            logger.error(
+                "--- agent failed after %.1fs: %s", elapsed_s, exc, exc_info=exc
+            )
+            yield _sse_event("error", {"message": str(exc)})
             return
-
-        for event in events:
-            yield event
+        logger.info(
+            "--- agent done  tool_calls=%d  %.1fs",
+            len(log.entries),
+            elapsed_s,
+        )
 
         raw_answer = answer_holder.get("answer") or agent_result
         cited_answer = log.inject_citations(raw_answer)

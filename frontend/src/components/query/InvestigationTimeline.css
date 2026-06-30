@@ -1,0 +1,52 @@
+.investigation-timeline {
+  width: 100%;
+}
+
+.investigation-timeline__label {
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.investigation-timeline__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Loader ─────────────────────────────────────────────── */
+.timeline-loader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.timeline-loader__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--brand-30);
+  margin: 0 15px;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.timeline-loader__text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.timeline-loader__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: var(--brand);
+  animation: blink-caret 750ms step-end infinite;
+}

@@ -1,0 +1,99 @@
+.how-header {
+  text-align: center;
+  margin-bottom: var(--section-header-mb);
+}
+
+.how-header p {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.how-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.how-step {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+
+.how-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.how-step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-body);
+  font-weight: var(--weight-semibold);
+  color: var(--text-accent);
+  background: var(--brand-10);
+  flex-shrink: 0;
+}
+
+.how-step-line {
+  width: 1px;
+  flex: 1;
+  border-left: 1px dashed var(--border-default);
+  min-height: 24px;
+}
+
+.how-step:last-child .how-step-line {
+  display: none;
+}
+
+.how-step-content {
+  padding-bottom: 32px;
+}
+
+.how-step:last-child .how-step-content {
+  padding-bottom: 0;
+}
+
+.how-step-title {
+  font-size: var(--h5);
+  font-weight: var(--weight-semibold);
+  color: var(--text-heading);
+  margin-bottom: 8px;
+}
+
+.how-step-desc {
+  font-size: var(--font-size-body);
+  color: var(--text-body);
+  margin-bottom: 12px;
+  max-width: none;
+}
+
+.how-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--text-accent);
+  background: var(--brand-10);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-base);
+  padding: 3px 8px;
+}
+
+@media (max-width: 640px) {
+  .how-step {
+    gap: 12px;
+  }
+
+  .how-step-content {
+    padding-bottom: 24px;
+  }
+}

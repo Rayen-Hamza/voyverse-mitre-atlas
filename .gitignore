@@ -11,3 +11,6 @@ wheels/
 
 # Environment variables
 .env
+.claude
+frontend/node_modules
+example code for the agent

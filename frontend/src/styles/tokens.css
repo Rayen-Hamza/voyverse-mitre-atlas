@@ -1,0 +1,85 @@
+:root {
+  /* ── Background ──────────────────────────────────────── */
+  --bg-primary: #020804;
+
+  /* ── Brand color palette ─────────────────────────────── */
+  --brand: #389DC6;
+  --brand-strong: #2A7A9B;
+  --brand-90: rgba(56, 157, 198, 0.9);
+  --brand-70: rgba(56, 157, 198, 0.7);
+  --brand-50: rgba(56, 157, 198, 0.5);
+  --brand-30: rgba(56, 157, 198, 0.3);
+  --brand-20: rgba(56, 157, 198, 0.2);
+  --brand-15: rgba(56, 157, 198, 0.15);
+  --brand-10: rgba(56, 157, 198, 0.1);
+  --brand-05: rgba(56, 157, 198, 0.05);
+  --brand-03: rgba(56, 157, 198, 0.03);
+
+  /* ── Text ────────────────────────────────────────────── */
+  --text-heading: #F5F3EF;
+  --text-heading-accent: #389DC6;
+  --text-body: #9C968E;
+  --text-body-bright: #C8C3B9;
+  --text-muted: #5C564E;
+  --text-accent: var(--brand);
+
+  /* ── Borders ─────────────────────────────────────────── */
+  --border-default: var(--brand-30);
+  --border-subtle: var(--brand-20);
+  --border-strong: var(--brand-50);
+  --border-divider: var(--brand-30);
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --font-size-body: 14px;
+  --font-size-lead: 18px;
+  --font-size-small: 12px;
+  --line-height-body: 1.6;
+  --line-height-heading: 1.2;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ── Heading scale (desktop) ─────────────────────────── */
+  --h1: 48px;
+  --h2: 36px;
+  --h3: 30px;
+  --h4: 24px;
+  --h5: 20px;
+  --h6: 16px;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --container-max: 1152px;
+  --container-pad: 16px;
+  --section-pad-y: 64px;
+  --section-header-mb: 48px;
+  --card-gap: 16px;
+  --radius-base: 4px;
+  --radius-sm: 2px;
+
+  /* ── Shadow ──────────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+
+  /* ── Status (used sparingly for alerts only) ─────────── */
+  --danger: #C70036;
+  --warning: #F97316;
+  --success: #009966;
+
+  /* ── Transition ──────────────────────────────────────── */
+  --ease-out-fast: 200ms ease-out;
+  --ease-out-snappy: 150ms ease-out;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --h1: 28px;
+    --h2: 24px;
+    --h3: 20px;
+    --h4: 18px;
+    --h5: 16px;
+    --h6: 14px;
+    --section-pad-y: 40px;
+    --section-header-mb: 32px;
+  }
+}

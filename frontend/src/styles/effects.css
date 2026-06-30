@@ -1,0 +1,54 @@
+/* ── Matrix rain ────────────────────────────────────────── */
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+/* ── Typing cursor blink ──────────────────────────────── */
+@keyframes blink-caret {
+  0%, 100% {
+    border-color: var(--brand);
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* ── Staggered fade-in on load ────────────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Subtle pulse glow ────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px var(--brand-20);
+  }
+  50% {
+    box-shadow: 0 0 12px var(--brand-30);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: fade-up 400ms ease-out forwards;
+}
+.reveal-d1 { animation-delay: 100ms; }
+.reveal-d2 { animation-delay: 200ms; }
+.reveal-d3 { animation-delay: 300ms; }
+.reveal-d4 { animation-delay: 400ms; }
+.reveal-d5 { animation-delay: 500ms; }
+.reveal-d6 { animation-delay: 600ms; }
+.reveal-d7 { animation-delay: 700ms; }
+.reveal-d8 { animation-delay: 800ms; }
